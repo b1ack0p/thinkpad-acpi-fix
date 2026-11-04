@@ -1,4 +1,4 @@
-# thinkpad-acpi-fixes
+# thinkpad-acpi-fix
 
 Fixes for older ThinkPads, IBM and early Lenovo models, whose firmware has
 its own volume control (the "console audio" of the Linux `thinkpad_acpi`
@@ -11,7 +11,7 @@ driver). On these laptops, under Linux:
   whatever the desktop's volume says, and also the **ThinkPad's own beeps**
   (charger plugged in, low battery).
 
-`thinkpad_acpi.sh` makes the volume buttons reach the desktop and keeps the
+`thinkpad-acpi-fix.sh` makes the volume buttons reach the desktop and keeps the
 firmware volume at full, muted only while the sound is muted. It works in
 every desktop session (LXDE, Xfce, MATE and others) and changes nothing on
 computers that do not need it.
@@ -29,9 +29,9 @@ Requirements: a ThinkPad with `thinkpad_acpi`'s console audio
 udev and systemd; a normal user account with sudo rights.
 
 ```bash
-git clone https://github.com/b1ack0p/thinkpad-acpi-fixes.git
-cd thinkpad-acpi-fixes
-bash thinkpad_acpi.sh
+git clone https://github.com/b1ack0p/thinkpad-acpi-fix.git
+cd thinkpad-acpi-fix
+bash thinkpad-acpi-fix.sh
 ```
 
 Restart the computer when asked: `thinkpad_acpi` reads its options only
@@ -39,11 +39,11 @@ when it starts.
 
 | Command                              | Does                                        |
 |--------------------------------------|---------------------------------------------|
-| `bash thinkpad_acpi.sh`              | Install the fixes (safe to run again)       |
-| `bash thinkpad_acpi.sh --status`     | Show the model, firmware volume and masks   |
-| `bash thinkpad_acpi.sh --uninstall`  | Remove everything it installed              |
-| `bash thinkpad_acpi.sh --no-keys`    | Install without the volume-button part      |
-| `bash thinkpad_acpi.sh --no-reboot`  | Do not offer to restart at the end          |
+| `bash thinkpad-acpi-fix.sh`              | Install the fixes (safe to run again)       |
+| `bash thinkpad-acpi-fix.sh --status`     | Show the model, firmware volume and masks   |
+| `bash thinkpad-acpi-fix.sh --uninstall`  | Remove everything it installed              |
+| `bash thinkpad-acpi-fix.sh --no-keys`    | Install without the volume-button part      |
+| `bash thinkpad-acpi-fix.sh --no-reboot`  | Do not offer to restart at the end          |
 
 ## Which ThinkPads
 
@@ -58,7 +58,7 @@ laptop has, and applies only what fits.
 
 If one press of a volume button changes the volume twice, the buttons were
 already reaching the desktop on that model: run
-`bash thinkpad_acpi.sh --no-keys`.
+`bash thinkpad-acpi-fix.sh --no-keys`.
 
 **Developed on:** IBM ThinkPad X40 (2371), Debian 10; testing is in progress, so treat this first version (0.1.0) as a preview. Reports from other models
 are welcome.
@@ -67,11 +67,11 @@ are welcome.
 
 | File | Purpose |
 |------|---------|
-| `/etc/modprobe.d/thinkpad-acpi-fixes.conf` | `options thinkpad_acpi volume_control=1`: the firmware volume becomes a mixer control (`ThinkPadEC`, `Console`) |
-| `/etc/udev/rules.d/90-thinkpad-acpi-fixes.rules` | Runs `hotkeys on` when `thinkpad_acpi` starts |
-| `/usr/local/lib/thinkpad-acpi-fixes/hotkeys` | Adds the volume buttons that the driver can report but leaves out to `hotkey_mask`, and to `hotkey_source_mask`, so that they are read from NVRAM |
-| `/usr/local/lib/thinkpad-acpi-fixes/console-audio` | In each session: keeps the firmware volume at 100%, muted only while the sound server's default output is muted, and puts it back whenever a button or the desktop changes it. It ends with the login session |
-| `/etc/xdg/autostart/thinkpad-acpi-fixes.desktop` | Starts `console-audio` in every desktop session |
+| `/etc/modprobe.d/thinkpad-acpi-fix.conf` | `options thinkpad_acpi volume_control=1`: the firmware volume becomes a mixer control (`ThinkPadEC`, `Console`) |
+| `/etc/udev/rules.d/90-thinkpad-acpi-fix.rules` | Runs `hotkeys on` when `thinkpad_acpi` starts |
+| `/usr/local/lib/thinkpad-acpi-fix/hotkeys` | Adds the volume buttons that the driver can report but leaves out to `hotkey_mask`, and to `hotkey_source_mask`, so that they are read from NVRAM |
+| `/usr/local/lib/thinkpad-acpi-fix/console-audio` | In each session: keeps the firmware volume at 100%, muted only while the sound server's default output is muted, and puts it back whenever a button or the desktop changes it. It ends with the login session |
+| `/etc/xdg/autostart/thinkpad-acpi-fix.desktop` | Starts `console-audio` in every desktop session |
 
 It also installs `alsa-utils` (for `amixer`) when it is missing. The volume
 buttons then arrive as ordinary volume keys (`XF86AudioRaiseVolume`,

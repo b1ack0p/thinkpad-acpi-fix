@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Title       : thinkpad_acpi.sh
+# Title       : thinkpad-acpi-fix.sh
 # Description : Fixes for older ThinkPads (IBM and early Lenovo models, such
 #               as the X40, T40 to T61, X60 and R50 to R61) whose firmware
 #               has its own volume, the "console audio" of thinkpad_acpi:
@@ -11,20 +11,20 @@
 #               It works in every desktop session.
 #               Other computers are left as they are.
 #
-# Usage       : bash thinkpad_acpi.sh              install the fixes
-#               bash thinkpad_acpi.sh --status     show the ThinkPad's state
-#               bash thinkpad_acpi.sh --uninstall  remove the fixes
-#               bash thinkpad_acpi.sh --help       show this text
+# Usage       : bash thinkpad-acpi-fix.sh              install the fixes
+#               bash thinkpad-acpi-fix.sh --status     show the ThinkPad's state
+#               bash thinkpad-acpi-fix.sh --uninstall  remove the fixes
+#               bash thinkpad-acpi-fix.sh --help       show this text
 #               Safe to run again.
 #
 # Options     :     --no-keys        leave the volume buttons to the firmware
 #                                    (if each press changes the volume twice)
 #                   --no-reboot      do not offer to restart the computer
 #
-# Installs    : /etc/modprobe.d/thinkpad-acpi-fixes.conf   volume_control=1
-#               /etc/udev/rules.d/90-thinkpad-acpi-fixes.rules
-#               /etc/xdg/autostart/thinkpad-acpi-fixes.desktop
-#               /usr/local/lib/thinkpad-acpi-fixes/        hotkeys, console-audio
+# Installs    : /etc/modprobe.d/thinkpad-acpi-fix.conf   volume_control=1
+#               /etc/udev/rules.d/90-thinkpad-acpi-fix.rules
+#               /etc/xdg/autostart/thinkpad-acpi-fix.desktop
+#               /usr/local/lib/thinkpad-acpi-fix/        hotkeys, console-audio
 #               and alsa-utils (amixer), if missing.
 #
 # Requires    : a ThinkPad with thinkpad_acpi's console audio
@@ -41,7 +41,7 @@
 set -Eeuo pipefail
 umask 022
 
-readonly APP_NAME="thinkpad-acpi-fixes"
+readonly APP_NAME="thinkpad-acpi-fix"
 readonly APP_VERSION="0.1.0"
 readonly LIB="/usr/local/lib/$APP_NAME"
 readonly MODPROBE="/etc/modprobe.d/$APP_NAME.conf"
@@ -117,7 +117,7 @@ status() {
 write_hotkeys() {
 	put "$LIB/hotkeys" 0755 <<'EOF'
 #!/bin/sh
-# Written by thinkpad_acpi.sh. Usage: hotkeys [on|off]
+# Written by thinkpad-acpi-fix.sh. Usage: hotkeys [on|off]
 d=/sys/devices/platform/thinkpad_acpi
 vol=$((0x00700000))
 [ -w "$d/hotkey_source_mask" ] && [ -w "$d/hotkey_mask" ] && [ -r "$d/hotkey_recommended_mask" ] || exit 0
@@ -134,8 +134,8 @@ else
 fi
 EOF
 	put "$UDEV_RULE" <<EOF
-# Written by thinkpad_acpi.sh: the volume buttons of this older ThinkPad
-# reported to the desktop. Remove with: bash thinkpad_acpi.sh --uninstall
+# Written by thinkpad-acpi-fix.sh: the volume buttons of this older ThinkPad
+# reported to the desktop. Remove with: bash thinkpad-acpi-fix.sh --uninstall
 ACTION=="add", SUBSYSTEM=="platform", KERNEL=="thinkpad_acpi", RUN+="$LIB/hotkeys on"
 EOF
 }
@@ -148,7 +148,7 @@ EOF
 write_console_audio() {
 	put "$LIB/console-audio" 0755 <<'EOF'
 #!/bin/sh
-# Written by thinkpad_acpi.sh. Usage: console-audio [set|watch]
+# Written by thinkpad-acpi-fix.sh. Usage: console-audio [set|watch]
 command -v amixer >/dev/null || exit 0
 amixer -c ThinkPadEC sget Console >/dev/null 2>&1 || exit 0
 set_ec() {
@@ -230,8 +230,8 @@ install_mode() {
 	sudo -v || die "sudo rights are needed"
 	if (( ${#pkgs[@]} )); then sudo apt-get install -y --no-install-recommends "${pkgs[@]}"; fi
 	put "$MODPROBE" <<EOF
-# Written by thinkpad_acpi.sh: the firmware volume of this ThinkPad as a mixer
-# control, which the session keeps at full. Remove with: bash thinkpad_acpi.sh --uninstall
+# Written by thinkpad-acpi-fix.sh: the firmware volume of this ThinkPad as a mixer
+# control, which the session keeps at full. Remove with: bash thinkpad-acpi-fix.sh --uninstall
 options thinkpad_acpi volume_control=1
 EOF
 	if (( O_KEYS )); then
