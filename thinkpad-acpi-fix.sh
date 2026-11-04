@@ -42,7 +42,7 @@ set -Eeuo pipefail
 umask 022
 
 readonly APP_NAME="thinkpad-acpi-fix"
-readonly APP_VERSION="0.1.0"
+readonly APP_VERSION="1.0.0"
 readonly LIB="/usr/local/lib/$APP_NAME"
 readonly MODPROBE="/etc/modprobe.d/$APP_NAME.conf"
 readonly UDEV_RULE="/etc/udev/rules.d/90-$APP_NAME.rules"

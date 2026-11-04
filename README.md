@@ -60,8 +60,18 @@ If one press of a volume button changes the volume twice, the buttons were
 already reaching the desktop on that model: run
 `bash thinkpad-acpi-fix.sh --no-keys`.
 
-**Developed on:** IBM ThinkPad X40 (2371), Debian 10; testing is in progress, so treat this first version (0.1.0) as a preview. Reports from other models
-are welcome.
+**Tested on:** IBM ThinkPad X40 (2371) on its X4 UltraBase, Debian 10:
+volume buttons, sound, the firmware's beeps and mute following the sound.
+Other models are detected from what the driver reports, but are untested;
+reports are welcome.
+
+### BIOS beeps
+
+The firmware's beeps also depend on the BIOS (F1 at power-on, **Config →
+Beep and Alarm** or **Alarm**). For example, with **Volume beep** disabled
+the volume buttons stay silent, and with **Power control beep** enabled the
+ThinkPad beeps when the charger is plugged in or out. The fixes only make
+sure that the firmware volume does not silence the beeps the BIOS enables.
 
 ## How it works
 
